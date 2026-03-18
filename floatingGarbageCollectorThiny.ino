@@ -46,7 +46,7 @@ void loop() {
   bool waterHigh = !digitalRead(WATER_SWITCH_PIN);
 
   // combined boolean logic for 3 IR sensor
-  bool isBinFull = dist1 <= MIN_DISTANCE_VOLT && dist2 <= MIN_DISTANCE_VOLT && dist3 <= MIN_DISTANCE_VOLT;
+  bool isBinFull = dist1 >= MIN_DISTANCE_VOLT && dist2 <= MIN_DISTANCE_VOLT && dist3 >= MIN_DISTANCE_VOLT;
 
   if (isBinFull) {
     stopSystem("Bin Full!");
