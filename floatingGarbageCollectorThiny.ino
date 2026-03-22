@@ -4,9 +4,9 @@
 // Set IR consts
 #define MIN_DISTANCE_VOLT 2100 // 2100 millivolt, check sensor distance to volt graph to adjust
 //GPIO Pins, check diagram, ADC pins
-#define IR_PIN1 32
-#define IR_PIN2 33
-#define IR_PIN3 34
+#define IR_PIN1 34
+#define IR_PIN2 32
+#define IR_PIN3 33
 
 // water level sensor switch
 # define WATER_SWITCH_PIN 27
@@ -46,7 +46,7 @@ void loop() {
   bool waterHigh = !digitalRead(WATER_SWITCH_PIN);
 
   // combined boolean logic for 3 IR sensor
-  bool isBinFull = dist1 >= MIN_DISTANCE_VOLT && dist2 <= MIN_DISTANCE_VOLT && dist3 >= MIN_DISTANCE_VOLT;
+  bool isBinFull = dist1 >= MIN_DISTANCE_VOLT && dist2 >= MIN_DISTANCE_VOLT && dist3 >= MIN_DISTANCE_VOLT;
 
   if (isBinFull) {
     stopSystem("Bin Full!");
