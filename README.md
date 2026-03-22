@@ -1,3 +1,46 @@
+# Claude summary (Too lazy to write this one, i wrote everything else):
+  Show more12:30 PMThis is Arduino/ESP32 code for an automated waste bin and water pump system. Here's what it does:
+  Hardware it controls
+
+  3 IR distance sensors (to detect fill levels in a bin)
+  1 water level switch sensor
+  1 water pump (via relay)
+  1 servo motor (a flap/door)
+  1 16x2 LCD display
+
+  How it works
+  Every loop cycle, it reads all sensors and makes a decision:
+  Normal operation (runSystem) — if the bin isn't full and water isn't too high:
+
+  Turns the pump ON
+  Opens the flap/door to 90°
+  LCD shows "System Running" and the status of each layer (F = Full, O = Open/empty)
+
+  Bin Full — if all 3 IR sensors detect something close (≥2100mV):
+
+  Turns pump OFF
+  Closes flap to 0°
+  LCD shows "Bin Full!"
+
+  Water High — if the float/switch sensor trips:
+
+  Turns pump OFF
+  Closes flap to 0°
+  LCD shows "Water High!"
+
+  The bigger picture
+  This looks like a smart composting or waste sorting bin — the 3 IR sensors measure fill level at 3 different heights (layers), the servo controls a gate/flap, and the pump likely handles liquid drainage or moisture. The system automatically stops everything when the bin is full or water overflows.
+
+# Installing software
+  use arduino IDE v2 and install the esp32 from espressifSystems in board manager.
+  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/
+
+  then install the following libraries in library manager:
+  esp32servo by kevin harrington and john k bennet
+  liquidcrystali2c by frank de brabander 
+
+# Components
+
 ## Sharp IR Sensor:
   https://www.instructables.com/How-to-Use-the-Sharp-IR-Sensor-GP2Y0A41SK0F-Arduin/ (if using library)
   https://global.sharp/products/device/lineup/data/pdf/datasheet/gp2y0a41sk_e.pdf (without library)
@@ -52,3 +95,13 @@ servo and i2c should be the simplest since theyre just PWM or I2C and have libra
 
 ## ESP32:
   Connect the 5V or Vin pin in the esp32 into the buck's OUT+ and GND to OUT-.
+
+# Debugging / Issues
+
+  Test out i2c lcd first by using an i2c detector code
+  https://randomnerdtutorials.com/esp32-i2c-scanner-arduino/
+
+  The IR sensor will not detect when object is too close 2-1cm
+
+  for the servo, it's best to create a seperate script to set see
+  what the 0 and 90 angle positions are.

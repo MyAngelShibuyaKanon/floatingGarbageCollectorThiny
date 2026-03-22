@@ -42,27 +42,43 @@ void loop() {
   int dist2 = analogReadMilliVolts(IR_PIN2);
   int dist3 = analogReadMilliVolts(IR_PIN3);
 
+
+  bool layer1Full = (dist1 >= MIN_DISTANCE_VOLT);
+  bool layer2Full = (dist2 >= MIN_DISTANCE_VOLT);
+  bool layer3Full = (dist3 >= MIN_DISTANCE_VOLT);
+
   // check if water switch active, if so, it means the water level is high
   bool waterHigh = !digitalRead(WATER_SWITCH_PIN);
 
   // combined boolean logic for 3 IR sensor
-  bool isBinFull = dist1 >= MIN_DISTANCE_VOLT && dist2 >= MIN_DISTANCE_VOLT && dist3 >= MIN_DISTANCE_VOLT;
+  bool isBinFull = layer1Full && layer2Full && layer3Full;
 
   if (isBinFull) {
     stopSystem("Bin Full!");
   } else if (waterHigh){
     stopSystem("Water High!");
   }else {
-    runSystem();
+    runSystem(layer1Full, layer2Full, layer3Full);
   }
+
+  delay(500);
 }
 
-void runSystem() {
+void runSystem(bool layer1Full, bool layer2Full, bool layer3Full) {
+  // 1st line of lcd: main status
+  // 2nd line of lcd: layer status 
   digitalWrite(PUMP_RELAY_PIN, HIGH);
   flapServo.write(90); // Open Flap
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("System: ACTIVE ");
+  lcd.print("System Running");
+  lcd.setCursor(0, 1);
+  char buffer[17]; // Buffer for 16 characters + null terminator
+  snprintf(buffer, sizeof(buffer), "L1:%c L2:%c L3:%c", 
+           layer1Full ? 'F' : 'O', 
+           layer2Full ? 'F' : 'O', 
+           layer3Full ? 'F' : 'O');
+  lcd.print(buffer);
 }
 
 void stopSystem(const char* message) {
@@ -71,4 +87,7 @@ void stopSystem(const char* message) {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(message);
+
+  lcd.setCursor(0, 1);
+  lcd.print("PUMP OFF");
 }
